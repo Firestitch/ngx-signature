@@ -2,6 +2,6 @@
  * Public API Surface of fs-menu
  */
 
-export { FsComponentModule } from './app/fs-component.module';
+export { FsSignatureModule } from './app/fs-signature.module';
 
-export { FsComponentComponent } from './app/components/component/component.component';
+export { FsSignatureComponent } from './app/components/signature/signature.component';
