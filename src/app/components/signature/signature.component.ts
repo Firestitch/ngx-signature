@@ -25,7 +25,7 @@ export class FsSignatureComponent implements OnInit, OnDestroy {
   public width = 400;
 
   @Input()
-  public height = 400;
+  public height = 200;
 
   @Output()
   public changed = new EventEmitter<string>();

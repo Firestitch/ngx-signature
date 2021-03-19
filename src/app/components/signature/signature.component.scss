@@ -1,16 +1,28 @@
+.signature-container {
+  padding: 10px 20px;
+  width: fit-content;
+
+  border: 1px solid #ddd;
+  border-radius: 5px;
+
+  position: relative;
+}
+
 canvas {
   display: block;
-  border: 1px solid #9e9e9e;
-  border-radius: 5px;
+  border-bottom: 1px solid #9e9e9e;
 }
 
 .clear {
-  margin: 10px 0;
+  position: absolute;
+  padding: 0;
+  min-width: auto;
+  bottom: 40px;
 }
 
-
-.signature-container {
-  width: fit-content;
-  text-align: right;
+.text {
+  color: #a9a9a9;
+  text-align: center;
+  padding-top: 15px;
+  font-size: 13px;
 }
-
