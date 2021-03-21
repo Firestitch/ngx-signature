@@ -22,10 +22,13 @@ import * as SignaturePadNative from 'signature_pad';
 export class FsSignatureComponent implements OnInit, OnDestroy {
 
   @Input()
-  public width = 400;
+  public width: string | number = 400;
 
   @Input()
   public height = 200;
+
+  @Input()
+  public label = 'Your Signature';
 
   @Output()
   public changed = new EventEmitter<string>();
@@ -40,6 +43,11 @@ export class FsSignatureComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
+    const match = String(this.width).match(/(\d+)%/);
+    if (match) {
+      this.width = this._getParentWidth(this._el.nativeElement, Number(match[1]));
+    }
+
     const canvas = this.canvas.nativeElement;
     canvas.width = this.width;
     canvas.height = this.height;
@@ -58,9 +66,22 @@ export class FsSignatureComponent implements OnInit, OnDestroy {
   private _initSignaturePad(): void {
     this.signaturePad = new SignaturePadNative.default(this.canvas.nativeElement, {
       onEnd: () => {
-        this.changed.emit(this.signaturePad.toDataURL());
+        this.changed.emit(this.svg);
       },
     });
   }
 
+  public get svg(): string {
+    const code = this.signaturePad.toDataURL('image/svg+xml').split(',')[1];
+
+    return atob(code);
+  }
+
+  public _getParentWidth(el, width): number {
+    if (el.offsetWidth) {
+      return (el.offsetWidth * (width/100));
+    }
+
+    return this._getParentWidth(el.parentElement, width);
+  }
 }

@@ -1,11 +1,21 @@
 <div class="signature-container">
-  <canvas #canvas></canvas>
+  <div class="signature-canvas">
+    <canvas #canvas></canvas>
+    <div class="line">
+      <mat-icon>clear</mat-icon>
+    </div>
+    <div class="label">
+      {{label}}
+    </div>
 
-  <button mat-button class="clear" type="button" (click)="clear()">
-    <mat-icon>clear</mat-icon>
-  </button>
-
-  <div class="text">
-    Your Signature
+    <button
+        mat-icon-button
+        class="clear"
+        type="button"
+        tabindex="-1"
+        matTooltip="Clear Signature"
+        (click)="clear()">
+      <mat-icon>delete_outline</mat-icon>
+    </button>
   </div>
 </div>

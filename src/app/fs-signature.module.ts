@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
 import { FsSignatureComponent } from './components/signature/signature.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -13,6 +14,7 @@ import { FsSignatureComponent } from './components/signature/signature.component
 
     MatIconModule,
     MatButtonModule,
+    MatTooltipModule,
   ],
   exports: [
     FsSignatureComponent,
