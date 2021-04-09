@@ -44,6 +44,7 @@ export class FsSignatureComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     const match = String(this.width).match(/(\d+)%/);
+
     if (match) {
       this.width = this._getParentWidth(this._el.nativeElement, Number(match[1]));
     }
@@ -79,7 +80,7 @@ export class FsSignatureComponent implements OnInit, OnDestroy {
 
   public _getParentWidth(el, width): number {
     if (el.offsetWidth) {
-      return (el.offsetWidth * (width/100));
+      return (el.offsetWidth * (width / 100));
     }
 
     return this._getParentWidth(el.parentElement, width);
