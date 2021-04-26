@@ -1,1 +1,12 @@
-<fs-signature></fs-signature>
+<fs-signature [signature]="url" (changed)="change($event)">
+</fs-signature>
+
+<fieldset>
+  <legend>Initial Value: </legend>
+  {{ url | json }}
+</fieldset>
+
+<fieldset>
+  <legend> Value: </legend>
+  {{ value | json }}
+</fieldset>

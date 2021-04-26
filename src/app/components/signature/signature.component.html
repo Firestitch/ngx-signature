@@ -1,19 +1,29 @@
-<div class="signature-container">
+<div class="signature-container" [ngClass]="{'inital-value': initialValue, 'readonly': readonly}">
   <div class="signature-canvas">
     <canvas #canvas></canvas>
+
+    <ng-container *ngIf="initialValue">
+      <img [src]="initialValue"
+           [width]="canvasWidth"
+           [height]="canvasHeight"
+           alt="signature">
+    </ng-container>
+
     <div class="line"></div>
     <div class="label">
       {{label}}
     </div>
 
-    <button
+    <ng-container *ngIf="!readonly">
+      <button
         mat-icon-button
         class="clear"
         type="button"
         tabindex="-1"
         matTooltip="Clear Signature"
         (click)="clear()">
-      <mat-icon>delete_outline</mat-icon>
-    </button>
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+    </ng-container>
   </div>
 </div>

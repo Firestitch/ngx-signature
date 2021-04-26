@@ -1,6 +1,10 @@
 @import '../tools/assets/playground.scss';
 @import '~@firestitch/message/styles';
 @import "~@firestitch/drawer/styles";
+@import '~@firestitch/prompt/styles';
+@import '~@firestitch/dialog/styles';
+@import '~@firestitch/form/styles';
 @import '../src/app/styles.scss';
 
 @include fs-drawer($mat-blue);
+@include fs-form($mat-blue);
