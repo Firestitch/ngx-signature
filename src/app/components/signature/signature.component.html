@@ -2,12 +2,18 @@
   <div class="signature-canvas">
     <canvas #canvas></canvas>
 
-    <ng-container *ngIf="initialValue">
+    <div class="img-container" *ngIf="initialValue">
       <img [src]="initialValue"
            [width]="canvasWidth"
            [height]="canvasHeight"
            alt="signature">
-    </ng-container>
+
+      <div class="signature-exists">
+        You can not edit existing signature
+        <br>
+        Clear to make new one
+      </div>
+    </div>
 
     <div class="line"></div>
     <div class="label">

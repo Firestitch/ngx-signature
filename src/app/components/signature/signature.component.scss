@@ -2,6 +2,30 @@
   width: fit-content;
   border: 1px solid #ddd;
   border-radius: 5px;
+
+  &:not(.readonly) {
+    .img-container {
+      &:hover {
+        .signature-exists {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+  }
+}
+
+.signature-exists {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: calc(100% - 48px);
+  width: 100%;
+  background: rgb(37 28 28 / 90%);
+  color: #fff;
+  text-align: center;
 }
 
 .signature-canvas {

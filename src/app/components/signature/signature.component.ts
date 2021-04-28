@@ -125,7 +125,6 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
   }
 
   public writeValue(value: string) {
-    debugger;
     if (isValidUrl(value)) {
       this.initialValue = value;
     } else if (value !== null) {
