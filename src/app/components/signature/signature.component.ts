@@ -17,6 +17,7 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 import * as SignaturePadNative from 'signature_pad';
 import { isValidUrl } from '../../helpers/is-valid-url';
+import { toSVG } from '../../helpers/to-svg';
 
 
 @Component({
@@ -93,7 +94,8 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
   }
 
   public get svg(): string {
-    const code = this.signaturePad.toDataURL('image/svg+xml').split(',')[1];
+    const code = toSVG(this.canvas, this.signaturePad)
+      .split(',')[1];
 
     return atob(code);
   }
