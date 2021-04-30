@@ -43,6 +43,9 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
   public height: number | string;
 
   @Input()
+  public hint: string;
+
+  @Input()
   public label = 'Your Signature';
 
   @Input('signature')

@@ -3,45 +3,26 @@
   border: 1px solid #ddd;
   border-radius: 5px;
 
-  &:not(.readonly) {
-    .img-container {
-      &:hover {
-        .signature-exists {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-      }
-    }
+  &.inital-value canvas {
+    visibility: hidden;
   }
-}
-
-.signature-exists {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: calc(100% - 48px);
-  width: 100%;
-  background: rgb(37 28 28 / 90%);
-  color: #fff;
-  text-align: center;
 }
 
 .signature-canvas {
   position: relative;
+  overflow: hidden;
+}
+
+.signature-image {
+  position: absolute;
+  top: 0;
+  width: 100%;
 }
 
 canvas {
   display: block;
   position: relative;
   z-index: 1;
-}
-
-.inital-value {
-  canvas {
-    display: none;
-  }
 }
 
 .readonly {
@@ -72,15 +53,21 @@ canvas {
   }
 }
 
-.label {
+.label-hint {
   color: #a9a9a9;
   text-align: center;
-  padding-top: 15px;
-  font-size: 13px;
+  top: 81%;
   position: absolute;
-  bottom: 10%;
   width: 100%;
   z-index: 0;
   left: 0;
   user-select: none;
+
+  .label {
+    font-size: 90%;
+  }
+
+  .hint {
+    font-size: 75%;
+  }
 }

@@ -2,22 +2,22 @@
   <div class="signature-canvas">
     <canvas #canvas></canvas>
 
-    <div class="img-container" *ngIf="initialValue">
-      <img [src]="initialValue"
-           [width]="canvasWidth"
-           [height]="canvasHeight"
-           alt="signature">
-
-      <div class="signature-exists">
-        You can not edit existing signature
-        <br>
-        Clear to make new one
-      </div>
-    </div>
+    <img
+      *ngIf="initialValue"
+       class="signature-image"
+      [src]="initialValue"
+      [width]="canvasWidth"
+      [height]="canvasHeight"
+      alt="signature">
 
     <div class="line"></div>
-    <div class="label">
-      {{label}}
+    <div class="label-hint">
+      <div class="label">
+        {{label}}
+      </div>
+      <div *ngIf="(!readonly && initialValue) || hint" class="hint">
+        {{ initialValue ? 'Clear to create a new signature' : hint }}
+      </div>
     </div>
 
     <ng-container *ngIf="!readonly">
