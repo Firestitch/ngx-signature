@@ -106,18 +106,18 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
   }
 
   public ngOnInit(): void {
-    this._updateDimensions();
+    this.updateSize();
     this._initSignaturePad();
     this._listenResize();
   }
 
   public ngOnChanges(changes: SimpleChanges) {
-    if (changes.maxWidth && changes.width.previousValue !== changes.width.currentValue) {
-      this._updateDimensions();
+    if (changes.maxWidth && changes.maxWidth.previousValue !== changes.maxWidth.currentValue) {
+      this.updateSize();
     }
 
-    if (changes.heightRatio && changes.height.previousValue !== changes.height.currentValue) {
-      this._updateDimensions();
+    if (changes.heightRatio && changes.heightRatio.previousValue !== changes.heightRatio.currentValue) {
+      this.updateSize();
     }
   }
 
@@ -133,18 +133,41 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
     }
   }
 
+  public updateSize(): void {
+    const parentWidth = this._getParentWidth(this._el.nativeElement);
+
+    const match = String(this.maxWidth).match(/(\d+)(%|px)/);
+
+    if (match) {
+      const width = Number(match[1]);
+      const maxWidth = match[2] === '%' ? (width / 100) * parentWidth : width;
+
+      this.width = parentWidth > maxWidth ? maxWidth : parentWidth;
+      this.height = this.width * this.heightRatio;
+
+      if (this.canvas) {
+        this.canvas.height = this.height;
+        this.canvas.width = this.width;
+      }
+    }
+  }
+
   public clear(): void {
     this.initialValue = null;
     this.signaturePad.clear();
     this.value = null;
   }
 
-  public _getParentWidth(el, width): number {
+  public _getParentWidth(el): number {
+    if (!el) {
+      return 0;
+    }
+
     if (el.offsetWidth) {
       return el.offsetWidth;
     }
 
-    return this._getParentWidth(el.parentElement, width);
+    return this._getParentWidth(el.parentElement);
   }
 
   public registerOnChange(fn: any) {
@@ -162,29 +185,10 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
           debounceTime(100),
         )
         .subscribe(() => {
-          this._updateDimensions();
+          this.updateSize();
           this._cdRef.markForCheck();
         });
     });
-  }
-
-  private _updateDimensions(): void {
-    const parentWidth = this._getParentWidth(this._el.nativeElement, 0);
-
-    const match = String(this.maxWidth).match(/(\d+)(%|px)/);
-
-    if (match) {
-      const width = Number(match[1]);
-      const maxWidth = match[2] === '%' ? (width / 100) * parentWidth : width;
-
-      this.width = parentWidth > maxWidth ? maxWidth : parentWidth;
-      this.height = this.width * this.heightRatio;
-
-      if (this.canvas) {
-        this.canvas.height = this.height;
-        this.canvas.width = this.width;
-      }
-    }
   }
 
   private _initSignaturePad(): void {
