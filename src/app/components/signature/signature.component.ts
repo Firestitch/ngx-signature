@@ -1,9 +1,11 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
   forwardRef,
   Input,
+  NgZone,
   OnChanges,
   OnDestroy,
   OnInit,
@@ -14,6 +16,9 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+
+import { fromEvent } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 import * as SignaturePadNative from 'signature_pad';
 import { isValidUrl } from '../../helpers/is-valid-url';
@@ -37,10 +42,10 @@ import { toSVG } from '../../helpers/to-svg';
 export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, ControlValueAccessor {
 
   @Input()
-  public width: number | string;
+  public width: number | string = '100%';
 
   @Input()
-  public height: number | string;
+  public height: number | string = '100%';
 
   @Input()
   public hint: string;
@@ -78,6 +83,8 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
 
   constructor(
     private _el: ElementRef,
+    private _cdRef: ChangeDetectorRef,
+    private _ngZone: NgZone,
   ) {}
 
   public get canvas(): HTMLCanvasElement {
@@ -113,6 +120,9 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
 
   public ngOnInit(): void {
     this._initSignaturePad();
+    this._setCanvasWidth(this.width);
+    this._setCanvasWidth(this.height);
+    this._listenResize();
   }
 
   public ngOnChanges(changes: SimpleChanges) {
@@ -158,6 +168,21 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
 
   public registerOnTouched(fn: any) {
     this._onTouched = fn;
+  }
+
+  private _listenResize(): void {
+    this._ngZone.run(() => {
+      fromEvent(window, 'resize')
+        .pipe(
+          debounceTime(200),
+        )
+        .subscribe(() => {
+          this._setCanvasWidth(this.width);
+          this._setCanvasWidth(this.height);
+
+          this._cdRef.markForCheck();
+        });
+    });
   }
 
   private _setCanvasWidth(value: string | number) {
