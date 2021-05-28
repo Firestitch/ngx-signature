@@ -42,10 +42,10 @@ import { toSVG } from '../../helpers/to-svg';
 export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, ControlValueAccessor {
 
   @Input()
-  public width: number | string = '100%';
+  public maxWidth = '450px';
 
   @Input()
-  public height: number | string = '100%';
+  public heightRatio = .5;
 
   @Input()
   public hint: string;
@@ -72,9 +72,8 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
   public canvasElRef: ElementRef;
 
   public signaturePad: SignaturePadNative.default;
-
-  private _canvasWidth = 400;
-  private _canvasHeight = 200;
+  public width: number;
+  public height: number;
 
   private _readonly = false;
 
@@ -89,18 +88,6 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
 
   public get canvas(): HTMLCanvasElement {
     return this.canvasElRef.nativeElement;
-  }
-
-  public get canvasContext(): CanvasRenderingContext2D | null {
-    return this.canvas.getContext('2d');
-  }
-
-  public get canvasWidth(): number {
-    return this._canvasWidth;
-  }
-
-  public get canvasHeight(): number {
-    return this._canvasHeight;
   }
 
   public get svg(): string {
@@ -119,19 +106,18 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
   }
 
   public ngOnInit(): void {
+    this._updateDimensions();
     this._initSignaturePad();
-    this._setCanvasWidth(this.width);
-    this._setCanvasWidth(this.height);
     this._listenResize();
   }
 
   public ngOnChanges(changes: SimpleChanges) {
-    if (changes.width && changes.width.previousValue !== changes.width.currentValue) {
-      this._setCanvasWidth(this.width);
+    if (changes.maxWidth && changes.width.previousValue !== changes.width.currentValue) {
+      this._updateDimensions();
     }
 
-    if (changes.height && changes.height.previousValue !== changes.height.currentValue) {
-      this._setCanvasHeight(this.height);
+    if (changes.heightRatio && changes.height.previousValue !== changes.height.currentValue) {
+      this._updateDimensions();
     }
   }
 
@@ -150,13 +136,12 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
   public clear(): void {
     this.initialValue = null;
     this.signaturePad.clear();
-
     this.value = null;
   }
 
   public _getParentWidth(el, width): number {
     if (el.offsetWidth) {
-      return (el.offsetWidth * (width / 100));
+      return el.offsetWidth;
     }
 
     return this._getParentWidth(el.parentElement, width);
@@ -174,50 +159,39 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
     this._ngZone.run(() => {
       fromEvent(window, 'resize')
         .pipe(
-          debounceTime(200),
+          debounceTime(100),
         )
         .subscribe(() => {
-          this._setCanvasWidth(this.width);
-          this._setCanvasWidth(this.height);
-
+          this._updateDimensions();
           this._cdRef.markForCheck();
         });
     });
   }
 
-  private _setCanvasWidth(value: string | number) {
-    const match = String(value).match(/(\d+)%/);
+  private _updateDimensions(): void {
+    const parentWidth = this._getParentWidth(this._el.nativeElement, 0);
+
+    const match = String(this.maxWidth).match(/(\d+)(%|px)/);
 
     if (match) {
-      this._canvasWidth = this._getParentWidth(this._el.nativeElement, Number(match[1]));
-    } else if (typeof value === 'string') {
-      this._canvasWidth = parseInt(value, 10);
-    } else {
-      this._canvasWidth = value;
-    }
+      const width = Number(match[1]);
+      const maxWidth = match[2] === '%' ? (width / 100) * parentWidth : width;
 
-    if (this.canvas) {
-      this.canvas.width = this.canvasWidth;
-    }
-  }
+      this.width = parentWidth > maxWidth ? maxWidth : parentWidth;
+      this.height = this.width * this.heightRatio;
 
-  private _setCanvasHeight(value: string | number) {
-    if (typeof value === 'string') {
-      this._canvasHeight = parseInt(value, 10);
-    } else {
-      this._canvasHeight = value;
-    }
-
-    if (this.canvas) {
-      this.canvas.height = this.canvasHeight;
+      if (this.canvas) {
+        this.canvas.height = this.height;
+        this.canvas.width = this.width;
+      }
     }
   }
 
   private _initSignaturePad(): void {
-    this.canvas.width = this.canvasWidth;
-    this.canvas.height = this.canvasHeight;
+    this.canvas.width = this.width;
+    this.canvas.height = this.width;
 
-    this.signaturePad = new SignaturePadNative.default(this.canvasElRef.nativeElement, {
+    this.signaturePad = new SignaturePadNative.default(this.canvas, {
       onEnd: () => {
         this.value = this.svg;
       },

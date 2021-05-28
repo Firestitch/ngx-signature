@@ -1,11 +1,14 @@
 <form fsForm>
-  <fs-signature [(ngModel)]="value" name="sign">
-  </fs-signature>
+  <fs-label-field class="fs-form-wrapper">
+    <fs-signature
+      [(ngModel)]="value"
+      [required]="true"
+      name="sign">
+    </fs-signature>
+    <fs-label-message class="fs-form-message">
 
-  <fieldset>
-    <legend> Value: </legend>
-    {{ value | json }}
-  </fieldset>
+    </fs-label-message>
+  </fs-label-field>
 
   <div>
     <button mat-raised-button color="primary">Submit</button>

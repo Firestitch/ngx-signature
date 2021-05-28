@@ -1,12 +1,10 @@
-<fs-signature [signature]="url" (changed)="change($event)">
+<fs-signature
+  [signature]="url"
+  hint="Make sure you stay in the box"
+  (changed)="change($event)">
 </fs-signature>
 
-<fieldset>
-  <legend>Initial Value: </legend>
-  {{ url | json }}
-</fieldset>
-
-<fieldset>
+<fieldset *ngIf="value">
   <legend> Value: </legend>
   {{ value | json }}
 </fieldset>

@@ -1,13 +1,15 @@
 <div class="signature-container" [ngClass]="{'inital-value': initialValue, 'readonly': readonly}">
   <div class="signature-canvas">
-    <canvas #canvas></canvas>
+    <canvas
+      #canvas
+      [width]="width"
+      [height]="height">
+    </canvas>
 
     <img
       *ngIf="initialValue"
        class="signature-image"
       [src]="initialValue"
-      [width]="canvasWidth"
-      [height]="canvasHeight"
       alt="signature">
 
     <div class="line"></div>
