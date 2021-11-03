@@ -195,10 +195,17 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
     this.canvas.width = this.width;
     this.canvas.height = this.width;
 
+    // min&max width and dotSize are fixes for SC-T297
+    const minWidth = 0.5;
+    const maxWidth = 2.5;
+
     this.signaturePad = new SignaturePadNative.default(this.canvas, {
       onEnd: () => {
         this.value = this.svg;
       },
+      dotSize: function () {
+        return (minWidth + maxWidth) / 2;
+      }
     });
   }
 }
