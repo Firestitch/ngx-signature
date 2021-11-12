@@ -128,8 +128,6 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
   public writeValue(value: string) {
     if (isValidUrl(value)) {
       this.initialValue = value;
-    } else if (value !== null) {
-      console.error('Signature Pad value must be URL');
     }
   }
 
