@@ -1,7 +1,6 @@
 <fs-signature
-  [signature]="url"
-  hint="Make sure you stay in the box"
-  (changed)="change($event)">
+  [(ngModel)]="value"
+  hint="Make sure you stay in the box">
 </fs-signature>
 
 <fieldset *ngIf="value">

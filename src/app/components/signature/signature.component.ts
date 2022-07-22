@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -28,9 +29,8 @@ import { toSVG } from '../../helpers/to-svg';
 @Component({
   selector: 'fs-signature',
   templateUrl: './signature.component.html',
-  styleUrls: [
-    './signature.component.scss',
-  ],
+  styleUrls: [ './signature.component.scss' ],  
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -53,9 +53,6 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
   @Input()
   public label = 'Your Signature';
 
-  @Input('signature')
-  public initialValue: string;
-
   @Input()
   get readonly(): boolean {
     return this._readonly;
@@ -74,7 +71,9 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
   public signaturePad: SignaturePadNative.default;
   public width: number;
   public height: number;
+  public url;
 
+  private _svg;
   private _readonly = false;
 
   private _onChange: (_: any) => void;
@@ -90,19 +89,17 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
     return this.canvasElRef.nativeElement;
   }
 
-  public get svg(): string {
-    const code = toSVG(this.canvas, this.signaturePad)
-      .split(',')[1];
-
-    return atob(code);
-  }
-
-  public set value(value: any) {
+  public set svg(value: any) {
+    this._svg = value;
     if (this._onChange) {
       this._onChange(value);
     }
 
     this.changed.emit(value);
+  }
+
+  public get svg() {
+    return this._svg;
   }
 
   public ngOnInit(): void {
@@ -127,7 +124,8 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
 
   public writeValue(value: string) {
     if (isValidUrl(value)) {
-      this.initialValue = value;
+      this.url = value;
+      this._cdRef.markForCheck();
     }
   }
 
@@ -151,9 +149,9 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
   }
 
   public clear(): void {
-    this.initialValue = null;
+    this.url = null;
+    this.svg = null;
     this.signaturePad.clear();
-    this.value = null;
   }
 
   public _getParentWidth(el): number {
@@ -199,7 +197,10 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
 
     this.signaturePad = new SignaturePadNative.default(this.canvas, {
       onEnd: () => {
-        this.value = this.svg;
+        const code = toSVG(this.canvas, this.signaturePad)
+            .split(',')[1];
+      
+        this.svg = atob(code);
       },
       dotSize: function () {
         return (minWidth + maxWidth) / 2;

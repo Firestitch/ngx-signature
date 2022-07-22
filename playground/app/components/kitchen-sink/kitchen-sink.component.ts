@@ -11,15 +11,10 @@ import { FsMessage } from '@firestitch/message';
 export class KitchenSinkComponent {
 
   public config = {};
-  public url = 'https://firestitch-dev.s3.amazonaws.com/pub/fv/file/01b9cc58b1453f43b0fe5fcf96263be1_1619422445.svg';
-  public value;
+  public value = 'https://firestitch-dev.s3.amazonaws.com/pub/fv/file/01b9cc58b1453f43b0fe5fcf96263be1_1619422445.svg';
 
   constructor(private exampleComponent: FsExampleComponent,
               private message: FsMessage) {
     exampleComponent.setConfigureComponent(KitchenSinkConfigureComponent, { config: this.config });
-  }
-
-  public change(value) {
-    this.value = value;
   }
 }

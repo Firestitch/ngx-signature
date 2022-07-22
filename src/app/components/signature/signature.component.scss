@@ -71,4 +71,8 @@ canvas {
   .hint {
     font-size: 75%;
   }
+
+  .label + .hint {
+    margin-top: 3px;
+  }
 }

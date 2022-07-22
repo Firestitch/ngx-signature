@@ -22,6 +22,5 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   declarations: [
     FsSignatureComponent,
   ],
-  providers: [],
 })
 export class FsSignatureModule {}
