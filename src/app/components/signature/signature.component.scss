@@ -8,6 +8,12 @@
   }
 }
 
+:host.ng-invalid.ng-touched {
+  .signature-container {
+    border-color: #f44336;
+  }
+}
+
 .signature-canvas {
   position: relative;
   overflow: hidden;

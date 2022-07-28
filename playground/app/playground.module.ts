@@ -14,12 +14,13 @@ import { ToastrModule } from 'ngx-toastr';
 import { AppMaterialModule } from './material.module';
 import {
   KitchenSinkComponent,
-  ExamplesComponent
+  ExamplesComponent,
+  SvgComponent,
+  ReadonlyComponent,
 } from './components';
 import { AppComponent } from './app.component';
 import { KitchenSinkConfigureComponent } from './components/kitchen-sink-configure';
 import { FormsComponent } from './components/forms/forms.component';
-import { ReadonlyComponent } from './components/readonly';
 
 const routes: Routes = [
   { path: '', component: ExamplesComponent },
@@ -47,6 +48,7 @@ const routes: Routes = [
     KitchenSinkConfigureComponent,
     FormsComponent,
     ReadonlyComponent,
+    SvgComponent,
   ],
 })
 export class PlaygroundModule {

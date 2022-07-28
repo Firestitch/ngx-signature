@@ -24,6 +24,7 @@ import { debounceTime } from 'rxjs/operators';
 import * as SignaturePadNative from 'signature_pad';
 import { isValidUrl } from '../../helpers/is-valid-url';
 import { toSVG } from '../../helpers/to-svg';
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 @Component({
@@ -83,6 +84,7 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
     private _el: ElementRef,
     private _cdRef: ChangeDetectorRef,
     private _ngZone: NgZone,
+    private _domSanitizer: DomSanitizer,
   ) {}
 
   public get canvas(): HTMLCanvasElement {
@@ -125,8 +127,11 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
   public writeValue(value: string) {
     if (isValidUrl(value)) {
       this.url = value;
-      this._cdRef.markForCheck();
+    } else if(value && value.match(/^<svg/)) {
+      this.url = this._domSanitizer.bypassSecurityTrustUrl(`data:image/svg+xml;base64,${window.btoa(value)}`);
     }
+
+    this._cdRef.markForCheck();
   }
 
   public updateSize(): void {
