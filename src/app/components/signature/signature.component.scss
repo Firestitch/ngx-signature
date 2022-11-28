@@ -8,7 +8,7 @@
   }
 }
 
-:host.ng-invalid.ng-touched {
+:host.ng-invalid.ng-dirty {
   .signature-container {
     border-color: #f44336;
   }
