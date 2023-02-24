@@ -1,0 +1,10 @@
+  <mat-form-field>
+  <input
+    matInput
+    [required]="required"
+    [(ngModel)]="name"
+    name="signature-type"
+    (keyup)="updateName()"
+    [placeholder]="placeholder">
+</mat-form-field>
+<div class="svg-container" #svgContainer></div>

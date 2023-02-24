@@ -22,8 +22,8 @@ import { fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
 import * as SignaturePadNative from 'signature_pad';
-import { isValidUrl } from '../../helpers/is-valid-url';
-import { toSVG } from '../../helpers/to-svg';
+import { isValidUrl } from '../../../../helpers/is-valid-url';
+import { toSVG } from '../../../../helpers/to-svg';
 import { DomSanitizer } from '@angular/platform-browser';
 
 
@@ -157,6 +157,7 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
     this.url = null;
     this.svg = null;
     this.signaturePad.clear();
+    this._cdRef.markForCheck();
   }
 
   public _getParentWidth(el): number {
@@ -206,6 +207,7 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
             .split(',')[1];
       
         this.svg = atob(code);
+        this._cdRef.markForCheck();
       },
       dotSize: function () {
         return (minWidth + maxWidth) / 2;

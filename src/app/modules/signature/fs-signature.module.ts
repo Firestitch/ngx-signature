@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
-import { FsSignatureComponent } from './components/signature/signature.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { FsSignatureComponent } from './components';
 
 
 @NgModule({
@@ -16,10 +16,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatButtonModule,
     MatTooltipModule,
   ],
-  exports: [
+  declarations: [
     FsSignatureComponent,
   ],
-  declarations: [
+  exports: [
     FsSignatureComponent,
   ],
 })

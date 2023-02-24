@@ -1,0 +1,10 @@
+<ng-container *ngIf="svg || image">
+  <div class="container" [style.width]="width + 'px'">
+    <ng-container *ngIf="svg">
+      <span [innerHTML]="svg"></span>
+    </ng-container>
+    <ng-container *ngIf="image">
+      <img [src]="image">
+    </ng-container>
+  </div>
+</ng-container>
