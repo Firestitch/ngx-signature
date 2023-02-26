@@ -3,7 +3,17 @@
   hint="Make sure you stay in the box">
 </fs-signature>
 
-<fieldset *ngIf="value">
-  <legend> Value: </legend>
-  {{ value | json }}
-</fieldset>
+<div class="buttons">
+  <button 
+      mat-raised-button
+      type="button"
+      (click)="downloadSvg()">
+    Download SVG
+  </button>
+  <button 
+      mat-raised-button
+      type="button"
+      (click)="downloadPng()">
+    Download PNG
+  </button>
+</div>

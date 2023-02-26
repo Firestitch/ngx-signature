@@ -1,8 +1,8 @@
 import { from, Observable } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
 
-export function base64Font(fontFamily): Observable<string> {
-  var url = `https://fonts.googleapis.com/icon?family=${fontFamily}`;
+export function base64Font(fontFamily, text): Observable<string> {
+  var url = `https://fonts.googleapis.com/css2?family=${fontFamily}&text=${text}`;
 
   return fetchCSS(url)
   .pipe(

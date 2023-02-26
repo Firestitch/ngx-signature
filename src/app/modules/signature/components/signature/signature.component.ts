@@ -10,21 +10,23 @@ import {
   OnChanges,
   OnDestroy,
   OnInit,
+  Optional,
   Output,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlContainer, ControlValueAccessor, NgForm, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
-import { fromEvent } from 'rxjs';
+import { fromEvent, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
 import * as SignaturePadNative from 'signature_pad';
 import { isValidUrl } from '../../../../helpers/is-valid-url';
 import { toSVG } from '../../../../helpers/to-svg';
 import { DomSanitizer } from '@angular/platform-browser';
+import { base64File, base64ImageFile } from '../../../../helpers';
 
 
 @Component({
@@ -38,7 +40,14 @@ import { DomSanitizer } from '@angular/platform-browser';
       useExisting: forwardRef(() => FsSignatureComponent),
       multi: true
     },
-  ]
+  ],
+  viewProviders: [
+    {
+      provide: ControlContainer,
+      deps: [[Optional, NgForm]],
+      useFactory: (ngForm: NgForm) => ngForm,
+    },
+  ],
 })
 export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, ControlValueAccessor {
 
@@ -102,6 +111,18 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
 
   public get svg() {
     return this._svg;
+  }
+    
+  public get svgFile(): Observable<File> {
+    return base64File(this.svgBase64, 'signature.svg', 'image/svg+xml');
+  }
+    
+  public get svgBase64(): string {
+    return window.btoa(this.svg);
+  }
+    
+  public get pngFile(): Observable<File> {
+    return base64ImageFile(this.svgBase64, 'signature.png', 'png');
   }
 
   public ngOnInit(): void {

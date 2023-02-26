@@ -1,10 +1,13 @@
 import {
   Component, ChangeDetectionStrategy, 
-  ViewChild, ElementRef, Input, Optional, EventEmitter, Output,
+  ViewChild, ElementRef, Input, Optional, EventEmitter, Output, OnInit,
 } from '@angular/core';
 import { ControlContainer, NgForm } from '@angular/forms';
-import { from, Observable, of } from 'rxjs';
+
+import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+
+import { base64File, base64ImageFile } from '../../../../helpers';
 import { base64Font } from '../../helpers/base64-font';
 
 
@@ -21,10 +24,13 @@ import { base64Font } from '../../helpers/base64-font';
     },
   ],
 })
-export class FsSignatureInputComponent {
+export class FsSignatureInputComponent implements OnInit {
 
   @ViewChild('svgContainer', { static: true })
   public svgContainer: ElementRef;
+
+  @ViewChild('styleContainer', { static: true })
+  public styleContainer: ElementRef;
 
   @Input() public width = 350;
   @Input() public required;
@@ -38,20 +44,19 @@ export class FsSignatureInputComponent {
   public svg;
   public name;
   public style;
+
+  public ngOnInit(): void {
+    this.styleContainer.nativeElement.innerHTML = `
+    <style>
+      @import url('https://fonts.googleapis.com/css?family=${this.fontFamily}');
+    </style>`;
+  }
   
   public svgFile(options: { width?: number, height?: number } = {}): Observable<File> {
     return this.svgBase64(options)
       .pipe(
-        switchMap((base64) => {
-          return from(fetch(`data:image/svg+xml;base64,${base64}`));
-        }),
-        switchMap((res) => {
-          return from(res.blob());
-        }),
-        map((blob) => {
-          return new File([blob], 'signature.svg', { type: "image/svg+xml" })
-        })
-    );
+        switchMap((base64) => base64File(base64, 'signature.svg', 'image/svg+xml')),
+      );
   }
   
   public svgBase64(options: { width?: number, height?: number } = {}): Observable<string> {
@@ -61,44 +66,16 @@ export class FsSignatureInputComponent {
       .pipe(
         map((svg) => {
           return window.btoa(svg);
-        })
-      )
+        }),
+      );
   }
   
   public pngFile(options: { width?: number, height?: number } = {}): Observable<File> {
-    const { width, height } = this._calculateOptions(options);
-
     return this.svgBase64(options)
       .pipe(
         switchMap((base64) => {
-          return new Observable<File>((observer) => {
-            let img = document.createElement('img');
-            img.onload = () => {
-              document.body.appendChild(img);
-              let canvas = document.createElement('canvas');
-              document.body.removeChild(img);
-              canvas.width = width;
-              canvas.height = height;
-              let ctx = canvas.getContext('2d');
-              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-              
-              try {
-                canvas.toBlob((blob) => {
-                  observer.next(new File([blob], 'signature.png', { type: 'image/png' }));
-                  observer.complete();
-                });
-              } catch (e) {
-                observer.error(null);
-              }
-            };
-      
-            img.onerror = () => {
-              observer.error(null);
-            };
-      
-            img.src = `data:image/svg+xml;base64,${base64}`;
-          });
-        })
+          return base64ImageFile(base64, 'signature.png', 'png');
+        }),
       );
   }
 
@@ -117,31 +94,19 @@ export class FsSignatureInputComponent {
     return of(true)
       .pipe(
         switchMap((): Observable<string> => {
-          if(!embedFonts) {
-            return of(`@import url('https://fonts.googleapis.com/css?family=${this.fontFamily}')`);
-          }
-
-          return base64Font(this.fontFamily);
+          return embedFonts ? base64Font(this.fontFamily, this.name) : of('');
         }),
         switchMap((fontStyle) => {
-          this.svgContainer.nativeElement.innerHTML = `
-          <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="${height}"
-              width="${width}"
-              data-font-family="${this.fontFamily}"      
-              data-font-size="${fontSize}"
-              data-font-name="${this.name}">
-            <defs>
-              <style>${fontStyle}</style>
-            </defs>
-            <text 
-                x="50%" 
-                y="50%"
-                style="text-anchor: middle; dominant-baseline: central; font-family: ${this.fontFamily}; font-size: ${fontSize}px;">
-              ${this.name}
-            </text>
-          </svg>`;
+          this.svgContainer.nativeElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="${height}" width="${width}" data-font-family="${this.fontFamily}" data-font-size="${fontSize}" data-font-name="${this.name}">
+  <defs>
+    <style>
+      ${fontStyle}
+    </style>
+  </defs>
+  <text x="50%" y="50%" style="text-anchor: middle; dominant-baseline: central; font-family: ${this.fontFamily}; font-size: ${fontSize}px;">
+    ${this.name}
+  </text>
+</svg>`;
       
           const svg = this.svgEl;
           const bbox = svg.getBBox();
