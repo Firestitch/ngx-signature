@@ -1,6 +1,6 @@
 import {
   Component, ChangeDetectionStrategy, 
-  ViewChild, ElementRef, Input, Optional, EventEmitter, Output, OnInit,
+  ViewChild, ElementRef, Input, Optional, EventEmitter, Output, OnInit, AfterViewInit,
 } from '@angular/core';
 import { ControlContainer, NgForm } from '@angular/forms';
 
@@ -24,7 +24,7 @@ import { base64Font } from '../../helpers/base64-font';
     },
   ],
 })
-export class FsSignatureInputComponent implements OnInit {
+export class FsSignatureInputComponent implements OnInit, AfterViewInit {
 
   @ViewChild('svgContainer', { static: true })
   public svgContainer: ElementRef;
@@ -38,11 +38,11 @@ export class FsSignatureInputComponent implements OnInit {
   @Input() public fontSize = 45;
   @Input() public fontFamily = 'Allura';
   @Input() public placeholder = 'Your name';
+  @Input() public signatureName = '';
 
   @Output() public changed = new EventEmitter<string>();
 
   public svg;
-  public name;
   public style;
 
   public ngOnInit(): void {
@@ -50,6 +50,14 @@ export class FsSignatureInputComponent implements OnInit {
     <style>
       @import url('https://fonts.googleapis.com/css?family=${this.fontFamily}');
     </style>`;
+  }
+
+  public ngAfterViewInit(): void {
+    if(this.signatureName) {
+      setTimeout(() => {
+        this.updateName();
+      });
+    }
   }
   
   public svgFile(options: { width?: number, height?: number } = {}): Observable<File> {
@@ -94,17 +102,17 @@ export class FsSignatureInputComponent implements OnInit {
     return of(true)
       .pipe(
         switchMap((): Observable<string> => {
-          return embedFonts ? base64Font(this.fontFamily, this.name) : of('');
+          return embedFonts ? base64Font(this.fontFamily, this.signatureName) : of('');
         }),
         switchMap((fontStyle) => {
-          this.svgContainer.nativeElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="${height}" width="${width}" data-font-family="${this.fontFamily}" data-font-size="${fontSize}" data-font-name="${this.name}">
+          this.svgContainer.nativeElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="${height}" width="${width}" data-font-family="${this.fontFamily}" data-font-size="${fontSize}" data-font-name="${this.signatureName}">
   <defs>
     <style>
       ${fontStyle}
     </style>
   </defs>
   <text x="50%" y="50%" style="text-anchor: middle; dominant-baseline: central; font-family: ${this.fontFamily}; font-size: ${fontSize}px;">
-    ${this.name}
+    ${this.signatureName}
   </text>
 </svg>`;
       
