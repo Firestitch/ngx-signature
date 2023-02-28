@@ -1,8 +1,8 @@
 import {
   Component, ChangeDetectionStrategy, 
-  ViewChild, ElementRef, Input, Optional, EventEmitter, Output, OnInit, AfterViewInit,
+  ViewChild, ElementRef, Input, Optional, EventEmitter, Output, OnInit, ChangeDetectorRef, forwardRef,
 } from '@angular/core';
-import { ControlContainer, NgForm } from '@angular/forms';
+import { ControlContainer, ControlValueAccessor, NgForm, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -23,8 +23,15 @@ import { base64Font } from '../../helpers/base64-font';
       useFactory: (ngForm: NgForm) => ngForm,
     },
   ],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => FsSignatureInputComponent),
+      multi: true,
+    },
+  ],
 })
-export class FsSignatureInputComponent implements OnInit, AfterViewInit {
+export class FsSignatureInputComponent implements OnInit, ControlValueAccessor {
 
   @ViewChild('svgContainer', { static: true })
   public svgContainer: ElementRef;
@@ -38,12 +45,37 @@ export class FsSignatureInputComponent implements OnInit, AfterViewInit {
   @Input() public fontSize = 45;
   @Input() public fontFamily = 'Allura';
   @Input() public placeholder = 'Your name';
-  @Input() public signatureName = '';
 
-  @Output() public changed = new EventEmitter<string>();
+  @Output() public svgChanged = new EventEmitter<string>();
 
   public svg;
   public style;
+  public name;
+
+  private _onChange: (value: unknown) => void;
+  private _onTouch: (value: unknown) => void;
+
+  public constructor(
+    private _cdRef: ChangeDetectorRef,
+  ) {}
+
+  public registerOnChange(fn: any): void {
+    this._onChange = fn;
+  }
+
+  public registerOnTouched(fn: any): void {
+    this._onTouch = fn;
+  }
+
+  public writeValue(value: any): void {
+    this.name = value;
+
+    if(this.name) {
+      this.updateName();
+    }
+
+    this._cdRef.markForCheck();
+  }
 
   public ngOnInit(): void {
     this.styleContainer.nativeElement.innerHTML = `
@@ -52,14 +84,6 @@ export class FsSignatureInputComponent implements OnInit, AfterViewInit {
     </style>`;
   }
 
-  public ngAfterViewInit(): void {
-    if(this.signatureName) {
-      setTimeout(() => {
-        this.updateName();
-      });
-    }
-  }
-  
   public svgFile(options: { width?: number, height?: number } = {}): Observable<File> {
     return this.svgBase64(options)
       .pipe(
@@ -91,10 +115,15 @@ export class FsSignatureInputComponent implements OnInit, AfterViewInit {
     return this.svgContainer.nativeElement.children[0];
   }
 
+  public change(name) {
+    this._onChange(name);
+    this.updateName();
+  }
+
   public updateName(): void {
     this.renderSvg(this.width, this.height, this.fontSize)
       .subscribe((svg) => {
-        this.changed.emit(svg);
+        this.svgChanged.emit(svg);
       });
   }
 
@@ -102,17 +131,17 @@ export class FsSignatureInputComponent implements OnInit, AfterViewInit {
     return of(true)
       .pipe(
         switchMap((): Observable<string> => {
-          return embedFonts ? base64Font(this.fontFamily, this.signatureName) : of('');
+          return embedFonts ? base64Font(this.fontFamily, this.name) : of('');
         }),
         switchMap((fontStyle) => {
-          this.svgContainer.nativeElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="${height}" width="${width}" data-font-family="${this.fontFamily}" data-font-size="${fontSize}" data-font-name="${this.signatureName}">
+          this.svgContainer.nativeElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="${height}" width="${width}" data-font-family="${this.fontFamily}" data-font-size="${fontSize}" data-font-name="${this.name}">
   <defs>
     <style>
       ${fontStyle}
     </style>
   </defs>
   <text x="50%" y="50%" style="text-anchor: middle; dominant-baseline: central; font-family: ${this.fontFamily}; font-size: ${fontSize}px;">
-    ${this.signatureName}
+    ${this.name}
   </text>
 </svg>`;
       

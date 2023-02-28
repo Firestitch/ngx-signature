@@ -1,7 +1,7 @@
 <fs-signature-input 
   [required]=" true"
-  [signatureName]="'John Doe'"
-  (changed)="signature = $event">
+  [(ngModel)]="name"
+  (svgChanged)="signature = $event">
 </fs-signature-input>
 
 <br>
