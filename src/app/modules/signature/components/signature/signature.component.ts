@@ -16,7 +16,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ControlContainer, ControlValueAccessor, NgForm, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 import { fromEvent, Observable } from 'rxjs';
@@ -40,7 +40,6 @@ import { base64File, base64ImageFile } from '../../../../helpers';
       multi: true
     },
   ],
-  viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
 })
 export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, ControlValueAccessor {
 
@@ -57,11 +56,11 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
   public label = 'Your Signature';
 
   @Input()
-  get readonly(): boolean {
+  public get readonly(): boolean {
     return this._readonly;
   }
 
-  set readonly(value: boolean) {
+  public set readonly(value: boolean) {
     this._readonly = coerceBooleanProperty(value);
   }
 
@@ -145,7 +144,7 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
       this.url = this._domSanitizer.bypassSecurityTrustUrl(`data:image/svg+xml;base64,${window.btoa(value)}`);
     }
 
-    this._cdRef.markForCheck();
+    this._cdRef.detectChanges();
   }
 
   public updateSize(): void {
