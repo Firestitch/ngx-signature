@@ -15,8 +15,8 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ControlContainer, ControlValueAccessor, NgForm, NG_VALUE_ACCESSOR } from '@angular/forms';
-
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 import { fromEvent, Observable } from 'rxjs';
@@ -25,7 +25,6 @@ import { debounceTime } from 'rxjs/operators';
 import * as SignaturePadNative from 'signature_pad';
 import { isValidUrl } from '../../../../helpers/is-valid-url';
 import { toSVG } from '../../../../helpers/to-svg';
-import { DomSanitizer } from '@angular/platform-browser';
 import { base64File, base64ImageFile } from '../../../../helpers';
 
 
@@ -41,13 +40,7 @@ import { base64File, base64ImageFile } from '../../../../helpers';
       multi: true
     },
   ],
-  viewProviders: [
-    {
-      provide: ControlContainer,
-      deps: [[Optional, NgForm]],
-      useFactory: (ngForm: NgForm) => ngForm,
-    },
-  ],
+  viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
 })
 export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, ControlValueAccessor {
 
