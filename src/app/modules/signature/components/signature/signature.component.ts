@@ -137,11 +137,24 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
     this.signaturePad.off();
   }
 
-  public writeValue(value: string) {
-    if (isValidUrl(value)) {
-      this.url = value;
-    } else if(value && value.match(/^<svg/)) {
-      this.url = this._domSanitizer.bypassSecurityTrustUrl(`data:image/svg+xml;base64,${window.btoa(value)}`);
+  public writeValue(value: string | File | Blob) {
+    this.url = null;
+    
+    if(value) {
+      if(typeof value === 'string') {
+        if (isValidUrl(value)) {
+          this.url = value;
+        } else if(value.match(/^<svg/)) {
+          this.url = this._domSanitizer.bypassSecurityTrustUrl(`data:image/svg+xml;base64,${window.btoa(value)}`);
+        } 
+      } else if(value instanceof File || value instanceof Blob) {
+        const reader = new FileReader();
+        reader.readAsDataURL(value);
+        reader.onloadend = () => {
+          this.url = this._domSanitizer.bypassSecurityTrustUrl(reader.result.toString());
+          this._cdRef.detectChanges();
+        };
+      }
     }
 
     this._cdRef.detectChanges();
