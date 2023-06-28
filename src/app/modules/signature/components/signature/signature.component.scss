@@ -1,3 +1,8 @@
+:host {
+  // Firefox issue. Wrong calculations of canvas width/height
+  display: flex;
+}
+
 .signature-container {
   width: fit-content;
   border: 1px solid #ddd;
