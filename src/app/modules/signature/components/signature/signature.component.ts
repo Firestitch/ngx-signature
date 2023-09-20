@@ -1,3 +1,4 @@
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -10,28 +11,26 @@ import {
   OnChanges,
   OnDestroy,
   OnInit,
-  Optional,
   Output,
   SimpleChanges,
-  ViewChild,
+  ViewChild
 } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { DomSanitizer } from '@angular/platform-browser';
 
 import { fromEvent, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
 import * as SignaturePadNative from 'signature_pad';
+import { base64File, base64ImageFile } from '../../../../helpers';
 import { isValidUrl } from '../../../../helpers/is-valid-url';
 import { toSVG } from '../../../../helpers/to-svg';
-import { base64File, base64ImageFile } from '../../../../helpers';
 
 
 @Component({
   selector: 'fs-signature',
   templateUrl: './signature.component.html',
-  styleUrls: [ './signature.component.scss' ],  
+  styleUrls: ['./signature.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
@@ -44,10 +43,16 @@ import { base64File, base64ImageFile } from '../../../../helpers';
 export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, ControlValueAccessor {
 
   @Input()
-  public maxWidth = '450px';
+  public maxWidth: string | number = '450px';
+
+  @Input()
+  public minHeight = 150;
 
   @Input()
   public heightRatio = .5;
+
+  @Input()
+  public width: number = 450;
 
   @Input()
   public hint: string;
@@ -71,8 +76,8 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
   public canvasElRef: ElementRef;
 
   public signaturePad: SignaturePadNative.default;
-  public width: number;
-  public height: number;
+  public canvasWidth: number;
+  public canvasHeight: number;
   public url;
 
   private _svg;
@@ -86,7 +91,7 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
     private _cdRef: ChangeDetectorRef,
     private _ngZone: NgZone,
     private _domSanitizer: DomSanitizer,
-  ) {}
+  ) { }
 
   public get canvas(): HTMLCanvasElement {
     return this.canvasElRef.nativeElement;
@@ -104,15 +109,15 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
   public get svg() {
     return this._svg;
   }
-    
+
   public get svgFile(): Observable<File> {
     return base64File(this.svgBase64, 'signature.svg', 'image/svg+xml');
   }
-    
+
   public get svgBase64(): string {
     return window.btoa(this.svg);
   }
-    
+
   public get pngFile(): Observable<File> {
     return base64ImageFile(this.svgBase64, 'signature.png', 'png');
   }
@@ -139,15 +144,15 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
 
   public writeValue(value: string | File | Blob) {
     this.url = null;
-    
-    if(value) {
-      if(typeof value === 'string') {
+
+    if (value) {
+      if (typeof value === 'string') {
         if (isValidUrl(value)) {
           this.url = value;
-        } else if(value.match(/^<svg/)) {
+        } else if (value.match(/^<svg/)) {
           this.url = this._domSanitizer.bypassSecurityTrustUrl(`data:image/svg+xml;base64,${window.btoa(value)}`);
-        } 
-      } else if(value instanceof File || value instanceof Blob) {
+        }
+      } else if (value instanceof File || value instanceof Blob) {
         const reader = new FileReader();
         reader.readAsDataURL(value);
         reader.onloadend = () => {
@@ -161,21 +166,17 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
   }
 
   public updateSize(): void {
-    const parentWidth = this._getParentWidth(this._el.nativeElement);
-
     const match = String(this.maxWidth).match(/(\d+)(%|px)/);
 
-    if (match) {
+    if (this.canvas && match) {
+      const parentWidth = this._getParentWidth(this._el.nativeElement);
       const width = Number(match[1]);
       const maxWidth = match[2] === '%' ? (width / 100) * parentWidth : width;
 
-      this.width = parentWidth > maxWidth ? maxWidth : parentWidth;
-      this.height = this.width * this.heightRatio;
-
-      if (this.canvas) {
-        this.canvas.height = this.height;
-        this.canvas.width = this.width;
-      }
+      this.canvasWidth = parentWidth > maxWidth ? this.width : parentWidth;
+      this.canvasHeight = this.canvasWidth * this.heightRatio;
+      this.canvas.height = this.canvasHeight < this.minHeight ? this.minHeight : this.canvasHeight;
+      this.canvas.width = this.canvasWidth;
     }
   }
 
@@ -220,8 +221,8 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
   }
 
   private _initSignaturePad(): void {
-    this.canvas.width = this.width;
-    this.canvas.height = this.width;
+    this.canvas.width = this.canvasWidth;
+    this.canvas.height = this.canvasHeight;
 
     // min&max width and dotSize are fixes for SC-T297
     const minWidth = 0.5;
@@ -230,8 +231,8 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
     this.signaturePad = new SignaturePadNative.default(this.canvas, {
       onEnd: () => {
         const code = toSVG(this.canvas, this.signaturePad)
-            .split(',')[1];
-      
+          .split(',')[1];
+
         this.svg = atob(code);
         this._cdRef.markForCheck();
       },
