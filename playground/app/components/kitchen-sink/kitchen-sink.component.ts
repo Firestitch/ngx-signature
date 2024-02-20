@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
-import { KitchenSinkConfigureComponent } from '../kitchen-sink-configure';
 import { FsExampleComponent } from '@firestitch/example';
 import { FsMessage } from '@firestitch/message';
 import { FsSignatureComponent } from '@firestitch/package';
@@ -23,7 +22,6 @@ export class KitchenSinkComponent {
     private exampleComponent: FsExampleComponent,
     private message: FsMessage,
     ) {
-    exampleComponent.setConfigureComponent(KitchenSinkConfigureComponent, { config: this.config });
   }
 
   public downloadPng() {
