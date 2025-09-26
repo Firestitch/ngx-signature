@@ -1,14 +1,17 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
+
 
 import { FsExampleModule } from '@firestitch/example';
 import { FsFormModule } from '@firestitch/form';
 import { FsLabelModule } from '@firestitch/label';
 import { FsMessageModule } from '@firestitch/message';
 import { FsSignatureInputModule, FsSignatureModule, FsSignaturePreviewModule } from '@firestitch/package';
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FsSignatureFieldModule } from 'src/app/modules/signature-field/fs-signature-field.module';
 
 import { AppComponent } from './app.component';
 import {
@@ -27,11 +30,12 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  bootstrap: [ AppComponent ],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
     FsSignatureModule,
     FsSignatureInputModule,
+    FsSignatureFieldModule,
     FsSignaturePreviewModule,
     BrowserAnimationsModule,
     AppMaterialModule,

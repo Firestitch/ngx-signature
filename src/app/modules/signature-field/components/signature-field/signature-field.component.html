@@ -1,0 +1,18 @@
+<fs-label-field class="fs-form-wrapper">
+  <fs-signature
+    [(ngModel)]="value"
+    [name]="'signature' + guid"
+    [required]="required"
+    [maxWidth]="maxWidth"
+    [minHeight]="minHeight"
+    [heightRatio]="heightRatio"
+    [width]="width"
+    [hint]="hint"
+    [label]="label"
+    [readonly]="readonly"
+    (ngModelChange)="changed()">
+  </fs-signature>
+  <fs-label-message class="fs-form-message">
+    <div class="fs-form-hint"></div>
+  </fs-label-message>
+</fs-label-field>

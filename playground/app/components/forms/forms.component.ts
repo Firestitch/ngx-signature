@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'forms',
-  templateUrl: 'forms.component.html',
-  styleUrls: ['forms.component.scss']
+  templateUrl: './forms.component.html',
+  styleUrls: ['./forms.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormsComponent {
 

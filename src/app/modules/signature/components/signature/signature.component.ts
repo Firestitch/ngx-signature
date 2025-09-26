@@ -1,4 +1,3 @@
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -13,15 +12,18 @@ import {
   OnInit,
   Output,
   SimpleChanges,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
+
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 import { fromEvent, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
 import * as SignaturePadNative from 'signature_pad';
+
 import { base64File, base64ImageFile } from '../../../../helpers';
 import { isValidUrl } from '../../../../helpers/is-valid-url';
 import { toSVG } from '../../../../helpers/to-svg';
@@ -36,7 +38,7 @@ import { toSVG } from '../../../../helpers/to-svg';
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => FsSignatureComponent),
-      multi: true
+      multi: true,
     },
   ],
 })
@@ -82,7 +84,6 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
 
   private _svg;
   private _readonly = false;
-
   private _onChange: (_: any) => void;
   private _onTouched: (_: any) => void;
 
@@ -129,11 +130,19 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
   }
 
   public ngOnChanges(changes: SimpleChanges) {
-    if (changes.maxWidth && changes.maxWidth.previousValue !== changes.maxWidth.currentValue) {
+    if (
+      !changes.maxWidth.firstChange &&
+      changes.maxWidth && 
+      changes.maxWidth.previousValue !== changes.maxWidth.currentValue
+    ) {
       this.updateSize();
     }
 
-    if (changes.heightRatio && changes.heightRatio.previousValue !== changes.heightRatio.currentValue) {
+    if (
+      !changes.heightRatio.firstChange &&
+      changes.heightRatio && 
+      changes.heightRatio.previousValue !== changes.heightRatio.currentValue
+    ) {
       this.updateSize();
     }
   }
@@ -150,13 +159,14 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
         if (isValidUrl(value)) {
           this.url = value;
         } else if (value.match(/^<svg/)) {
-          this.url = this._domSanitizer.bypassSecurityTrustUrl(`data:image/svg+xml;base64,${window.btoa(value)}`);
+          this.url = this._domSanitizer
+            .bypassSecurityTrustUrl(`data:image/svg+xml;base64,${window.btoa(value)}`);
         }
       } else if (value instanceof File || value instanceof Blob) {
         const reader = new FileReader();
         reader.readAsDataURL(value);
         reader.onloadend = () => {
-          this.url = this._domSanitizer.bypassSecurityTrustUrl(reader.result.toString());
+          this.url = this._domSanitizer.bypassSecurityTrustUrl(String(reader.result));
           this._cdRef.detectChanges();
         };
       }
@@ -238,7 +248,7 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
       },
       dotSize: function () {
         return (minWidth + maxWidth) / 2;
-      }
+      },
     });
   }
 }
