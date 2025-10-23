@@ -131,16 +131,16 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
 
   public ngOnChanges(changes: SimpleChanges) {
     if (
-      !changes.maxWidth.firstChange &&
       changes.maxWidth && 
+      !changes.maxWidth.firstChange &&      
       changes.maxWidth.previousValue !== changes.maxWidth.currentValue
     ) {
       this.updateSize();
     }
 
     if (
-      !changes.heightRatio.firstChange &&
       changes.heightRatio && 
+      !changes.heightRatio.firstChange &&      
       changes.heightRatio.previousValue !== changes.heightRatio.currentValue
     ) {
       this.updateSize();
