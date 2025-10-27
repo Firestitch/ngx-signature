@@ -1,10 +1,10 @@
-<ng-container *ngIf="svg || image">
+@if (svg || image) {
   <div class="container" [style.width]="width + 'px'">
-    <ng-container *ngIf="svg">
+    @if (svg) {
       <span [innerHTML]="svg"></span>
-    </ng-container>
-    <ng-container *ngIf="image">
+    }
+    @if (image) {
       <img [src]="image">
-    </ng-container>
+    }
   </div>
-</ng-container>
+}

@@ -1,5 +1,5 @@
-<div 
-    class="signature-container" 
+<div
+  class="signature-container"
     [ngClass]="{ 
       'inital-value': url, 
       'readonly': readonly 
@@ -11,11 +11,12 @@
         [width]="canvasWidth"
         [height]="canvasHeight">
       </canvas>
-      <img
-        *ngIf="url"
-        class="signature-image"
-        [src]="url"
-        alt="signature">
+      @if (url) {
+        <img
+          class="signature-image"
+          [src]="url"
+          alt="signature">
+      }
     </div>
     <div class="footer">
       <div class="line"></div>
@@ -27,7 +28,7 @@
           {{ (url || svg) ? 'Clear to create a new signature' : hint || '&nbsp;' }}
         </div>
       </div>
-      <ng-container *ngIf="!readonly">
+      @if (!readonly) {
         <button
           mat-icon-button
           class="clear"
@@ -37,7 +38,7 @@
           (click)="clear()">
           <mat-icon>delete_outline</mat-icon>
         </button>
-      </ng-container>
+      }
     </div>
   </div>
 </div>
