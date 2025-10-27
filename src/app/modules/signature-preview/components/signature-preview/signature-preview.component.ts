@@ -5,10 +5,11 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 
 @Component({
-  selector: 'fs-signature-preview',
-  templateUrl: './signature-preview.component.html',
-  styleUrls: ['./signature-preview.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'fs-signature-preview',
+    templateUrl: './signature-preview.component.html',
+    styleUrls: ['./signature-preview.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
 })
 export class FsSignaturePreviewComponent {
 

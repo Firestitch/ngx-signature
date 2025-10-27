@@ -2,34 +2,42 @@ import {
   Component, ChangeDetectionStrategy, 
   ViewChild, ElementRef, Input, Optional, EventEmitter, Output, OnInit, ChangeDetectorRef, forwardRef,
 } from '@angular/core';
-import { ControlContainer, ControlValueAccessor, NgForm, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlContainer, ControlValueAccessor, NgForm, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
 
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 import { base64File, base64ImageFile } from '../../../../helpers';
 import { base64Font } from '../../helpers/base64-font';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 
 @Component({
-  selector: 'fs-signature-input',
-  templateUrl: './signature-input.component.html',
-  styleUrls: ['./signature-input.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,  
-  viewProviders: [
-    {
-      provide: ControlContainer,
-      deps: [[Optional, NgForm]],
-      useFactory: (ngForm: NgForm) => ngForm,
-    },
-  ],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => FsSignatureInputComponent),
-      multi: true,
-    },
-  ],
+    selector: 'fs-signature-input',
+    templateUrl: './signature-input.component.html',
+    styleUrls: ['./signature-input.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    viewProviders: [
+        {
+            provide: ControlContainer,
+            deps: [[Optional, NgForm]],
+            useFactory: (ngForm: NgForm) => ngForm,
+        },
+    ],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => FsSignatureInputComponent),
+            multi: true,
+        },
+    ],
+    standalone: true,
+    imports: [
+        MatFormField,
+        MatInput,
+        FormsModule,
+    ],
 })
 export class FsSignatureInputComponent implements OnInit, ControlValueAccessor {
 

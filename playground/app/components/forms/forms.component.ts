@@ -1,10 +1,23 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { FsFormModule } from '@firestitch/form';
+import { FsSignatureFieldComponent } from '../../../../src/app/modules/signature-field/components/signature-field/signature-field.component';
+import { MatButton } from '@angular/material/button';
+import { JsonPipe } from '@angular/common';
 
 @Component({
-  selector: 'forms',
-  templateUrl: './forms.component.html',
-  styleUrls: ['./forms.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'forms',
+    templateUrl: './forms.component.html',
+    styleUrls: ['./forms.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        FormsModule,
+        FsFormModule,
+        FsSignatureFieldComponent,
+        MatButton,
+        JsonPipe,
+    ],
 })
 export class FormsComponent {
 

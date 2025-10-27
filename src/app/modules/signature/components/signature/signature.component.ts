@@ -27,20 +27,31 @@ import * as SignaturePadNative from 'signature_pad';
 import { base64File, base64ImageFile } from '../../../../helpers';
 import { isValidUrl } from '../../../../helpers/is-valid-url';
 import { toSVG } from '../../../../helpers/to-svg';
+import { NgClass } from '@angular/common';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
 
 
 @Component({
-  selector: 'fs-signature',
-  templateUrl: './signature.component.html',
-  styleUrls: ['./signature.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => FsSignatureComponent),
-      multi: true,
-    },
-  ],
+    selector: 'fs-signature',
+    templateUrl: './signature.component.html',
+    styleUrls: ['./signature.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => FsSignatureComponent),
+            multi: true,
+        },
+    ],
+    standalone: true,
+    imports: [
+        NgClass,
+        MatIconButton,
+        MatTooltip,
+        MatIcon,
+    ],
 })
 export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, ControlValueAccessor {
 

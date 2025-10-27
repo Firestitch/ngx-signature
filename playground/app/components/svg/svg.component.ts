@@ -1,10 +1,19 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FsSignatureComponent } from '../../../../src/app/modules/signature/components/signature/signature.component';
+import { FormsModule } from '@angular/forms';
+import { FsFormModule } from '@firestitch/form';
 
 @Component({
-  selector: 'app-svg',
-  templateUrl: './svg.component.html',
-  styleUrls: ['./svg.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-svg',
+    templateUrl: './svg.component.html',
+    styleUrls: ['./svg.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        FsSignatureComponent,
+        FormsModule,
+        FsFormModule,
+    ],
 })
 export class SvgComponent {
 

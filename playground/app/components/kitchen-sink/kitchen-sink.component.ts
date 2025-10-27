@@ -3,12 +3,23 @@ import { FsExampleComponent } from '@firestitch/example';
 import { FsMessage } from '@firestitch/message';
 import { FsSignatureComponent } from '@firestitch/package';
 import { downloadFile } from 'playground/app/helpers';
+import { FsSignatureComponent as FsSignatureComponent_1 } from '../../../../src/app/modules/signature/components/signature/signature.component';
+import { FormsModule } from '@angular/forms';
+import { FsFormModule } from '@firestitch/form';
+import { MatButton } from '@angular/material/button';
 
 @Component({
-  selector: 'kitchen-sink',
-  templateUrl: 'kitchen-sink.component.html',
-  styleUrls: ['kitchen-sink.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'kitchen-sink',
+    templateUrl: 'kitchen-sink.component.html',
+    styleUrls: ['kitchen-sink.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        FsSignatureComponent_1,
+        FormsModule,
+        FsFormModule,
+        MatButton,
+    ],
 })
 export class KitchenSinkComponent {
 

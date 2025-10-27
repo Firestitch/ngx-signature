@@ -5,27 +5,35 @@ import {
   Input,
   ViewChild,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
 
 import { guid } from '@firestitch/common';
 
 import { Observable } from 'rxjs';
 
 import { FsSignatureComponent } from '../../../signature';
+import { FsLabelModule } from '@firestitch/label';
+import { FsSignatureComponent as FsSignatureComponent_1 } from '../../../signature/components/signature/signature.component';
 
 
 @Component({
-  selector: 'fs-signature-field',
-  templateUrl: './signature-field.component.html',
-  styleUrls: ['./signature-field.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => FsSignatureFieldComponent),
-      multi: true,
-    },
-  ],
+    selector: 'fs-signature-field',
+    templateUrl: './signature-field.component.html',
+    styleUrls: ['./signature-field.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => FsSignatureFieldComponent),
+            multi: true,
+        },
+    ],
+    standalone: true,
+    imports: [
+        FsLabelModule,
+        FsSignatureComponent_1,
+        FormsModule,
+    ],
 })
 export class FsSignatureFieldComponent implements ControlValueAccessor {
 
