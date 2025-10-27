@@ -1,6 +1,4 @@
-import {
-  Component, ChangeDetectionStrategy, Input, ViewChild, ElementRef,
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, ViewChild, ElementRef, inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 
@@ -12,6 +10,8 @@ import { DomSanitizer } from '@angular/platform-browser';
     standalone: true,
 })
 export class FsSignaturePreviewComponent {
+  private _domSanitizer = inject(DomSanitizer);
+
 
   @ViewChild('styleContainer', { static: true })
   public styleContainer: ElementRef;
@@ -34,9 +34,5 @@ export class FsSignaturePreviewComponent {
   public svg;
   public image;
   public style;
-
-  constructor(
-    private _domSanitizer: DomSanitizer,
-  ) {}
   
 }

@@ -1,19 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  EventEmitter,
-  forwardRef,
-  Input,
-  NgZone,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  Output,
-  SimpleChanges,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, Input, NgZone, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -54,6 +39,11 @@ import { MatIcon } from '@angular/material/icon';
     ],
 })
 export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, ControlValueAccessor {
+  private _el = inject(ElementRef);
+  private _cdRef = inject(ChangeDetectorRef);
+  private _ngZone = inject(NgZone);
+  private _domSanitizer = inject(DomSanitizer);
+
 
   @Input()
   public maxWidth: string | number = '450px';
@@ -97,13 +87,6 @@ export class FsSignatureComponent implements OnInit, OnChanges, OnDestroy, Contr
   private _readonly = false;
   private _onChange: (_: any) => void;
   private _onTouched: (_: any) => void;
-
-  constructor(
-    private _el: ElementRef,
-    private _cdRef: ChangeDetectorRef,
-    private _ngZone: NgZone,
-    private _domSanitizer: DomSanitizer,
-  ) { }
 
   public get canvas(): HTMLCanvasElement {
     return this.canvasElRef.nativeElement;

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild, inject } from '@angular/core';
 import { FsExampleComponent } from '@firestitch/example';
 import { FsMessage } from '@firestitch/message';
 import { FsSignatureComponent } from '@firestitch/package';
@@ -22,18 +22,15 @@ import { MatButton } from '@angular/material/button';
     ],
 })
 export class KitchenSinkComponent {
+  private exampleComponent = inject(FsExampleComponent);
+  private message = inject(FsMessage);
+
 
   @ViewChild(FsSignatureComponent)
   public signature: FsSignatureComponent;
 
   public config = {};
   public value = '';
-
-  constructor(
-    private exampleComponent: FsExampleComponent,
-    private message: FsMessage,
-    ) {
-  }
 
   public downloadPng() {
     this.signature.pngFile

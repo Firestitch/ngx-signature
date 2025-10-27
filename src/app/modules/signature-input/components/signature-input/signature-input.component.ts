@@ -1,7 +1,4 @@
-import {
-  Component, ChangeDetectionStrategy, 
-  ViewChild, ElementRef, Input, Optional, EventEmitter, Output, OnInit, ChangeDetectorRef, forwardRef,
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, ViewChild, ElementRef, Input, Optional, EventEmitter, Output, OnInit, ChangeDetectorRef, forwardRef, inject } from '@angular/core';
 import { ControlContainer, ControlValueAccessor, NgForm, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
 
 import { Observable, of } from 'rxjs';
@@ -40,6 +37,8 @@ import { MatInput } from '@angular/material/input';
     ],
 })
 export class FsSignatureInputComponent implements OnInit, ControlValueAccessor {
+  private _cdRef = inject(ChangeDetectorRef);
+
 
   @ViewChild('svgContainer', { static: true })
   public svgContainer: ElementRef;
@@ -62,10 +61,6 @@ export class FsSignatureInputComponent implements OnInit, ControlValueAccessor {
 
   private _onChange: (value: unknown) => void;
   private _onTouch: (value: unknown) => void;
-
-  public constructor(
-    private _cdRef: ChangeDetectorRef,
-  ) {}
 
   public registerOnChange(fn: any): void {
     this._onChange = fn;
